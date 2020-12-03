@@ -4,11 +4,15 @@
 
 #include "./utils.h"
 
-
-void clearVar(void *element) {
-	memset(element, 0x00, sizeof(element));
-}
-
+/**
+ * COPIA UMA PORÇÃO DE UMA STRING EM OUTRA 
+ * @param input String cuja porção será copiada 
+ * @param output String para onde a porção copiada será retornada 
+ * @param initIndex Índice de /input/ do início da porção 
+ * @param size Quantidade de caracteres a serem copiados 
+ * @return OK se /size/ for <= ao tamanho total de /input/, se não, 
+ * retorn ERR
+ **/
 int subString(char *input, char *output, int initIndex, int size) {
 
 	int i = 0;
@@ -26,23 +30,29 @@ int subString(char *input, char *output, int initIndex, int size) {
 }
 
 /**
- * TRANFORMA STRING EM ARRAY, DIVIDINDO /input/ PELO
- * SEPARADO ENVIADO EM divider
+ * TRANFORMA STRING EM ARRAY, DIVIDINDO /input/ PELO 
+ * SEPARADOR ENVIADO EM divider 
  * EX:
- * char str[] = "Example of#split funcion in#C lang"
- * char *result[64];
- * split(str, result, " ", 3);
- * -> result[0] = "Example of"
- * -> result[1] = "split funcion in"
- * -> result[2] = "C lang"
+ * char str[] = "Example of#split funcion in#C lang"; 
+ * char result[5][128]; 
+ * split(str, result, "#", 3); 
+ * -> result[0] = "Example of" 
+ * -> result[1] = "split funcion in" 
+ * -> result[2] = "C lang" 
+ * @param input String que sera dividida.
+ * @param output Array de string onde as sentenças divididas serão.
+ * @param divider Caracter que será usado para dividir as sentenças de /input/.
+ * @param sentences Número de sentenças que serão divididas.
+ * @return OK se /input/ tiver pelo menos 3 caractéres, sendo 1 o separador,
+ * se não, retorna ERR.
  **/
-int split(char *input, char *output[], char *divider, int sentences) {
+int split(char *input, char output[][128], char *divider, int sentences) {
 
 	int i = 0;
 	char str[strlen(input) + 1];
 	char *aux;
 
-	if (strlen(input) <= 2) {
+	if (strlen(input) <= 3) {
 		return ERR;
 	}
 
@@ -50,7 +60,7 @@ int split(char *input, char *output[], char *divider, int sentences) {
 
 	aux = strtok(str, divider);
 	while (aux) {
-		output[i] = aux;
+		strcpy(output[i], aux);
 		aux = strtok(NULL, divider);
 		i++;
 		if (i > sentences) break;
@@ -60,11 +70,11 @@ int split(char *input, char *output[], char *divider, int sentences) {
 }
 
 /**
- * QUEBRA LINHAS DE UMA STRING POR UM DETERMINADO CARACTER
- * EX:
- * char str[] = "Example of@breakLineByCharacter@function"
- * breakLineByCharacter('@', str);
- * -> str = "Example of\nbreakLineByCharacter\nfunction"
+ * QUEBRA LINHAS DE UMA STRING POR UM DETERMINADO CARACTER 
+ * EX: 
+ * char str[] = "Example of#breakLineByCharacter#function" 
+ * breakLineByCharacter('#', str); 
+ * -> str = "Example of\nbreakLineByCharacter\nfunction" 
  * @param character Separador que determina a quebra de linha
  * @param str String de entrada
  **/
@@ -82,17 +92,17 @@ void breakLineByCharacter(char character, char *str) {
 }
 
 /**
- * SEPARA UM DATA ENVIADA EM /date/
- * EX:
- * separateDate("150212", year, month, day);
- * -> year = 15
- * -> month = 02
- * -> day = 12
- * EX:
- * separateDate("19590518", year, month, day);
- * -> year = 1959
- * -> month = 05
- * -> day = 18
+ * SEPARA UM DATA ENVIADA EM /date/ 
+ * EX: 
+ * separateDate("150212", year, month, day); 
+ * -> year = 15 
+ * -> month = 02 
+ * -> day = 12 
+ * EX: 
+ * separateDate("19590518", year, month, day); 
+ * -> year = 1959 
+ * -> month = 05 
+ * -> day = 18 
  * @param year Recebe o ano da data enviada em /date/
  * Deve ter o seu formato em AAAAMMDD ou AAMMDD, 
  * qualquer outro formato não é aceito
@@ -138,7 +148,7 @@ int separateDate(char *date, char *year, char *month, char *day) {
 		}
 
 		*arrDate[i] = atoi(sAux);
-		clearVar(sAux);
+		memset(sAux, 0x00, sizeof(sAux));
 	}
 
 	sprintf(day, "%02d", iDay);
@@ -149,12 +159,12 @@ int separateDate(char *date, char *year, char *month, char *day) {
 }
 
 /**
- * TRANFORMA UM NÚMERO INTEIRO EM UM NÚEMRO DE 2 CASAS DECIMAIS
- * RECOMENDADO PARA VALORES MONETÁRIOS
- * EX:
- * char str[] = "15658";
- * putCurrencyDecimals(str, result);
- * -> result == "156,58"
+ * TRANFORMA UM NÚMERO INTEIRO EM UM NÚEMRO DE 2 CASAS DECIMAIS 
+ * RECOMENDADO PARA VALORES MONETÁRIOS 
+ * EX: 
+ * char str[] = "15658"; 
+ * putCurrencyDecimals(str, result); 
+ * -> result == "156,58" 
  * @param input Valor inteiro a ser transformado
  * @param output /input/ transformado com 2 casas decimais
  **/
@@ -175,7 +185,6 @@ void putCurrencyDecimals(char *input, char *output) {
 		for (i = 4 - inputSize; i > 0; i--) {
 			strcat(aux, "0");
 		}
-		sprintf(aux, "%s%s", aux, input);
 		strcpy(input, aux);
 		inputSize = strlen(input);
 	}
@@ -193,10 +202,10 @@ void putCurrencyDecimals(char *input, char *output) {
 }
 
 /**
- * FAZ O ARREDONDAMENTO MATEMATICO PARA O NUMERO DE CASAS DECIMAIS DESEJADO
- * EX:
- * mathRound(10.32965, 3);
- * -> 10.330000
+ * FAZ O ARREDONDAMENTO MATEMATICO PARA O NUMERO DE CASAS DECIMAIS DESEJADO 
+ * EX: 
+ * mathRound(10.32965, 3); 
+ * -> 10.330000 
  * @param value Valor a ser arredondado
  * @param decimals Número de casas decimais
  * @return /value/ arredondado em /decimals/ casas decimais
@@ -218,8 +227,6 @@ long double mathRound(long double value, int decimals) {
 	iValue = (int)value;
 	dValue = value - iValue;
 
-	sprintf(sValue, "%LF", value);
-	sprintf(sDecimal, "%LF", dValue);
 
 	size = strlen(sDecimal);
 
@@ -264,12 +271,12 @@ long double mathRound(long double value, int decimals) {
 }
 
 /**
- * RETORNA EM ouput TODO O CONTEÚDO DE input COM TODOS os
- * CARACTÉRES ENVIADOS EM /toExclude/ REMOVIDOS
- * EX:
- * char str[] = "Example for the excludeFromStr function"
- * excludeFromStr(str, result, "aeiou");
- * -> "Exmpl fr th xcldFrmStr fnctn"
+ * RETORNA EM ouput TODO O CONTEÚDO DE input COM TODOS OS 
+ * CARACTÉRES ENVIADOS EM /toExclude/ REMOVIDOS 
+ * EX: 
+ * char str[] = "Example for the excludeFromStr function" 
+ * excludeFromStr(str, result, "aeiou"); 
+ * -> "Exmpl fr th xcldFrmStr fnctn" 
  * @param input String do qual os chars de /toExclude/ serão retirados
  * @param output String de retorno
  * @param toExclude Conjunto de chars que serma removidos de /input/
@@ -303,50 +310,47 @@ void excludeFromStr(char *input, char *output, char *toExclude) {
 }
 
 /**
- * FORMATA UMA STRING (GERALMENTE NUMÉRICA) SEGUINDO O FORMATA
- * ENVIADO EM /format/
- * EX: formatByMask("1405", str, "##h ##m")
- * -> str == "14h 05m"
+ * FORMATA UMA STRING (GERALMENTE NUMÉRICA) SEGUINDO O FORMATA 
+ * ENVIADO EM /format/ 
+ * EX: formatByMask("1405", str, "##h ##m") 
+ * -> str == "14h 05m" 
  * @param input String que se encaixara no formato desejado.
  * @param output String formatada.
  * @param format Formado no qual a /input/ será formatado.  
  * O formato deve ser feito com o carácter #, qualquer outros
  * será usado como separador
  **/
-int formatByMask(char *input, char *output, char *format) {
+void formatByMask(char *input, char *output, char *format) {
 
 	char aux[128];
 	char cpy[128];
 	int  i = 0;
 	int  len = 0;
-	int  count = 0;
+	int  j = 0;
 
 	strcpy(cpy, input);
-	len = strlen(cpy);
+	len = strlen(format);
 
-	while (count <= len) {
+	while (i <= len) {
 		if (format[i] != '#') {
 			aux[i] = format[i];
-			i++;
 		} else {
-			aux[i] = cpy[count];
-			count++;
-			i++;
+			aux[i] = cpy[j];
+			j++;
 		}
+		i++;
 	}
 	aux[i] = '\0';
 
 	strcpy(output, aux);
-
-	return(0);
 }
 
 /**
- * SUBSTITUIDO UM CARACTÉRES DE SUMA STRING, POR UM CARACTER DETERMINADO
+ * SUBSTITUIDO UM CARACTÉRES DE SUMA STRING, POR UM CARACTER DETERMINADO 
  * EX: 
- * char str[] = "X.P-T*O";
- * replaceAll(str, "*-.", '+');
- * -> str == "X+P+T+O"
+ * char str[] = "X.P-T*O"; 
+ * replaceAll(str, "*-.", '+'); 
+ * -> str == "X+P+T+O" 
  * @param input String on os caracteres seram substituidos.
  * @param search String com todos os caractéres a serem subtituídos.
  * @param new Caracter que servirá como substituto.
@@ -371,11 +375,11 @@ void replaceAll(char *input, char *search, char new) {
 }
 
 /**
- * QUEBRA E MOSTRA OS CAMPOS DE VALORES DE UMA STRING NO FORMATO TLV
- * E RETORNA VALOR DO CAMPO DESEJADO
- * EX: 
- * breakTlv("001005abcdef002003ghi003006jklmno", 2, str);
- * -> str == "ghi"
+ * QUEBRA E MOSTRA OS CAMPOS DE VALORES DE UMA STRING NO FORMATO TLV 
+ * E RETORNA VALOR DO CAMPO DESEJADO 
+ * EX:  
+ * breakTlv("001005abcdef002003ghi003006jklmno", 2, str); 
+ * -> str == "ghi" 
  * @param input String em formato TLV.
  * @param targetTag Tag cujo valor deseja que retorne.
  * @param output Valor da da tag escolhida.
@@ -391,28 +395,23 @@ int breakTlv(char *input, int targetTag, char *output){
 	char aux[1024] = {0x00};
 	char value[512] ={0x00};
 
-	printf(">> [%s]\n", input);
-	printf("ID  TAM FILL\n", input);
 	strcpy(output, "\0");
 	if(!strlen(input) < 7){
 		while(i < strlen(input)){
-			clearVar(aux);
+			memset(aux, 0x00, sizeof(aux));
 			subString(input, aux, i, 3);			// ID DA TAG
 			tag = atoi(aux);
 
 			subString(input, aux, i += 3, 3);		// TAMANHO DO CONTEÚDO DA TAG
 			size = atoi(aux);
 			length = atoi(aux);
-			clearVar(aux);
+			memset(aux, 0x00, sizeof(aux));
 
 
 			subString(input, aux, i += 3, size);	// CONTEÚDO DA TAG
 			strcpy(value, aux);
 			i += size;
 
-			printf("%03d ", tag);
-			printf("%03d", length);
-			printf(" %s\n", value);
 
 			if(tag == targetTag){
 				strcpy(output, value);
@@ -427,100 +426,23 @@ int breakTlv(char *input, int targetTag, char *output){
 }
 
 /**
- * FAZ A LEITURA DA TABELA DE TAXAS A JUROS DA MENSAGERIA - ISO 8583
- **/
-int breakClient(char *input){
-
-	FILE *exp;
-
-	int i = 0;
-	int size = 0;
-
-	char table[512] = {0x00};
-	char aux[2048] = {0x00};
-	char index[512] = {0x00};
-	char first[512] = {0x00};
-	char second[512] = {0x00};
-	char third[512] = {0x00};
-	char line[2048] = {0x00};
-	
-	
-	printf(">> [%s]\n", input);
-
-	if(strlen(input) >= 16){
-		while(i < strlen(input)){
-			subString(input, table, i, 3);			// COD. DA TABELA
-			i += 3;
-
-			subString(input, index, i, 3);			// INDEX A SER LIDO
-			i += 3;
-			sprintf(line, "%s %s ", line, index);
-
-			if(strcmp(index, "999") == 0){
-				goto INIT_READ;
-			}
-
-			subString(input, first, i, 2);			// POSIÇÃO 1
-			i += 2;
-			sprintf(line, "%s %s ", line, first);
-
-			subString(input, second, i, 5);			// POSIÇÃO 2
-			i += 5;
-			sprintf(line, "%s %s ", line, second);
-
-			subString(input, third, i, 3);			// POSIÇÃO 3
-			i += 3;
-			sprintf(line, "%s %s\n", line, third);
-
-
-			if(strcmp(table, "000") == 0){
-				exp = fopen(".//juros.txt", "ab");				
-			}else if(strcmp(table, "001") == 0){
-				exp = fopen(".//taxas.txt", "ab");				
-			}
-
-			fputs(line, exp);
-			fclose(exp);
-
-			printf("\n%s ", table);
-			printf("%s", line);
-			// printf("%3s\n", table);
-			// printf("%3s ", index);
-			// printf("%2s ", first);
-			// printf("%5s ", second);
-			// printf("%3s\n", third);
-
-			INIT_READ:
-			clearVar(index);
-			clearVar(first);
-			clearVar(second);
-			clearVar(third);
-			clearVar(line);
-			clearVar(exp);
-		}
-	}else{
-		return ERR;
-	}
-	return OK;
-}
-
-/**
- * LÊ, EM PORÇÕES, O CONTEÚDO DE UM ARQUIVO
- * USO RECOMENDADO EM ARQUIVO COM MUITOS DADOS
+ * LÊ, EM PORÇÕES, O CONTEÚDO DE UM ARQUIVO 
+ * USO RECOMENDADO EM ARQUIVO COM MUITOS DADOS 
  * @param filePath Caminho do arquivo a ser lido.
- * @param output String de 1024 bytes(max) lida do arquivo.
+ * @param output String de no máximo 1024 bytes lida do arquivo.
  * @param position Posição em bytes do início da leitura do arquivo.
  * Se for 0 ou menor, o arquivo será lido do início, do contrário, 
  * a leitura se iniciará apartir do byte especificado.
- * @param portion Quantidade de bytes a serem lidos (e retornardos), 
- * se valor enviado for < 0, o padrão será o máximo de 1024.
- * @return Número de bytes lidos.
+ * @param portion Quantidade de bytes a serem lidos (e retornardos). 
+ * Se valor enviado for menor que 0, o padrão será o máximo de 1024.
+ * @return Número de bytes lidos caso o arquivo exista, 
+ * do contrátio, retorna ERR
  **/
 int readHugeFile(char *filePath, char *output, int position, int portion){
 
 	FILE *pFile;
 	int rc = 0;
-	char name[64] = {0x00};
+	char name[128] = {0x00};
 	char read[1024] = {0x00};
 
 	pFile = fopen(filePath, "r");
@@ -530,7 +452,7 @@ int readHugeFile(char *filePath, char *output, int position, int portion){
 	}
 
 	if(position > 0) fseek(pFile, position, SEEK_SET);
-	if(portion <= 0) portion = 1024;
+	if(portion <= 0 || portion > 1024) portion = 1024;
 
 	rc = fread(read, sizeof(char), portion, pFile);
 
@@ -542,12 +464,37 @@ int readHugeFile(char *filePath, char *output, int position, int portion){
 }
 
 /**
- * REMOVE UMA PORÇÃO DE /str/ E COLOCA EM output
+ * REMOVE ESPAÇOS DO INÍCIO E DO FINAL DA STRING 
+ * @param str String de onde os espaços seram removidos.
+ **/
+void trim(char *str){
+
+	int strSize = strlen(str);
+	int i = 0;
+
+	while(str[0] == ' ' || str[strSize - 1] == ' '){
+
+		if(str[0] == ' '){
+			for (i = 0; i < strSize; i++){
+				str[i] = str[i + 1];
+			}
+			strSize = strlen(str);
+		}
+
+		if(str[strSize - 1] == ' '){
+			str[strSize - 1] = '\0';
+			strSize = strlen(str);
+		}
+	}
+}
+
+/**
+ * REMOVE UMA PORÇÃO DE /str/ E COLOCA EM output 
  * EX: 
  * char str[] = "Testing splice function in C lang" 
  * splice(str, strlen(str), 7, 7, result); 
  * -> str = "Testing function in C lang" 
- * -> result = "splice"
+ * -> result = "splice" 
  * @param str String de onde será removido o conteúdo
  * @param strSize Tamanho total de /str/
  * @param init Ìndice do início de onde será pego o conteúdo de /str/
@@ -576,30 +523,8 @@ void splice(char *str, int strSize, int init, int length, char *output){
 }
 
 /**
- * REMOVE ESPAÇO DO INÍCIO E DO FINAL DA STRING
- * @param str String de onde os espaços seram removidos.
- **/
-void trim(char *str){
-
-	int strSize = strlen(str);
-	int i = 0;
-
-	if(str[0] == ' '){
-		for (i = 0; i < strSize; i++){
-			str[i] = str[i + 1];
-		}
-		strSize = strlen(str);
-	}
-	
-	if(str[strSize - 1] == ' '){
-		str[strSize - 1] = '\0';
-	}
-
-}
-
-/**
- * FUNÇÃO QUE RETORNA O NúMERO DE CARACTERES DE UMA STRING
- * DESPRESANDO A DUPLICIDADE DOS CARACTERES ESPECIAIS
+ * FUNÇÃO QUE RETORNA O NúMERO DE CARACTERES DE UMA STRING 
+ * DESPRESANDO A DUPLICIDADE DOS CARACTERES ESPECIAIS 
  * @param input String que terá sua quantidade de caractéres contada
  * @return Número de caractéres da string; tamanho de /input/
  **/
@@ -623,9 +548,9 @@ int strlen2(char *input) {
 }
 
 /**
- * REALIZADA A VALIDAÇÃO DO DÍGITO VERIFICADOR DO CPF
+ * REALIZADA A VALIDAÇÃO DO DÍGITO VERIFICADOR DO CPF 
  * @param cpf CPF a ser verificado.
- * @return True se o /cpf/ for válido e false se for inválido.
+ * @return *true* se o /cpf/ for válido e *false* se for inválido.
  **/
 int verifyCpf(char *cpf){
 	
@@ -669,13 +594,11 @@ int verifyCpf(char *cpf){
 				strcat(finalDigit, "0");
 			}
 		}else{
-			sprintf(finalDigit, "%s%d", finalDigit, (int)(11 - divRemainder));
 		}
 
 		sum = 0;
 		memset(numChars, 0x00, sizeof(numChars));
 		memset(multiplied, 0x00, sizeof(multiplied));
-		sprintf(cpfWithoutDigit, "%s%s", cpfWithoutDigit, finalDigit);
 		multiplier = 11;
 
 
@@ -690,9 +613,9 @@ int verifyCpf(char *cpf){
 
 /** 
  * **** DEVE SER REVISADA ****
- * REALIZADA A VALIDAÇÃO DO DÍGITO VERIFICADOR DO CNPJ
+ * REALIZADA A VALIDAÇÃO DO DÍGITO VERIFICADOR DO CNPJ 
  * @param cnpj CNPJ a ser verificado.
- * @return True se o /cnpj/ for válido e false se for inválido.
+ * @return Retorna *true* se o /cnpj/ for válido e *false* se for inválido.
  **/
 int verifyCnpj(char *cnpj){
 	
@@ -736,13 +659,11 @@ int verifyCnpj(char *cnpj){
 				strcat(finalDigit, "0");
 			}
 		}else{
-			sprintf(finalDigit, "%s%d", finalDigit, (int)(11 - divRemainder));
 		}
 
 		sum = 0;
 		memset(numChars, 0x00, sizeof(numChars));
 		memset(multiplied, 0x00, sizeof(multiplied));
-		sprintf(cnpjWithoutDigit, "%s%s", cnpjWithoutDigit, finalDigit);
 		multiplier = 2;
 	}
 
@@ -754,7 +675,10 @@ int verifyCnpj(char *cnpj){
 }
 
 /**
- * VERIFICA SE CARACTÉR /element/ É UM NÚMERO
+ * VERIFICA SE CARACTÉR /element/ É UM NÚMERO 
+ * @param element Caracter a ser verificado
+ * @return Retorna *true* se /element/ for um número,
+ * se não, retorna *false*
  **/
 int isNumber(char element){
 
@@ -766,7 +690,12 @@ int isNumber(char element){
 }
 
 /**
- * VERIFICA SE CARACTÉR /element/ ESTÁ EM /characters/
+ * VERIFICA SE CARACTÉR /element/ ESTÁ EM /characters/ 
+ * @param element Caracter a ser verificado
+ * @param characters Arrastring com caracteres que serão
+ * comparados com /element/
+ * @return Retorna *true* se /element/ estiver presente em /characters/,
+ * se não, retorna *false*
  **/
 int isLikeChar(char element, char *characters){
 
