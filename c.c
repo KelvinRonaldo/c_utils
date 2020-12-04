@@ -3,9 +3,31 @@
 #include <string.h>
 
 #include "./utils.h"
+#include "./datetime.h"
 
 
 int main(void){
+
+	char test[32] = {0x00};
+
+	puts("inicio");
+	system("sleep 3");
+
+	getDayOfWeek("000120", test, false, LANG_PTBR);
+	puts(test);
+
+	memset(test, 0, sizeof(test));
+
+	getMonth("191201", test, true, LANG_PTBR);
+	puts(test);
+
+	memset(test, 0, sizeof(test));
+
+	getDateOnFormat("DD MM YYYY, L W", test, "20000512052312", LANG_PTBR);
+	puts(test);
+
+	return 0;
+
 
 	int ret;
 	int intVar;

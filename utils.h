@@ -4,8 +4,8 @@
 #define OK		1
 #define LIMIT	100
 
-#define true 	1;
-#define false 	0;
+#define true 	1
+#define false 	0
 
 #define ERR					0
 #define NOT_REAL_ROOTS      -10

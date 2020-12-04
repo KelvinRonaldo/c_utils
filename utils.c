@@ -5,12 +5,13 @@
 #include "./utils.h"
 
 /**
- * COPIA UMA PORÇÃO DE UMA STRING EM OUTRA 
+ * @brief COPIA UMA PORÇÃO DE UMA STRING EM OUTRA 
+ * 
  * @param input String cuja porção será copiada 
  * @param output String para onde a porção copiada será retornada 
  * @param initIndex Índice de /input/ do início da porção 
  * @param size Quantidade de caracteres a serem copiados 
- * @return OK se /size/ for <= ao tamanho total de /input/, se não, 
+ * @return int OK se /size/ for <= ao tamanho total de /input/, se não, 
  * retorn ERR
  **/
 int subString(char *input, char *output, int initIndex, int size) {
@@ -30,7 +31,7 @@ int subString(char *input, char *output, int initIndex, int size) {
 }
 
 /**
- * TRANFORMA STRING EM ARRAY, DIVIDINDO /input/ PELO 
+ * @brief TRANFORMA STRING EM ARRAY, DIVIDINDO /input/ PELO 
  * SEPARADOR ENVIADO EM divider 
  * EX:
  * char str[] = "Example of#split funcion in#C lang"; 
