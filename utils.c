@@ -202,7 +202,7 @@ void putCurrencyDecimals(char *input, char *output) {
 	strcpy(output, value);
 }
 
-/**
+/** ******** DEVE SER REVISADA ********
  * FAZ O ARREDONDAMENTO MATEMATICO PARA O NUMERO DE CASAS DECIMAIS DESEJADO 
  * EX: 
  * mathRound(10.32965, 3); 
@@ -250,7 +250,7 @@ long double mathRound(long double value, int decimals) {
 				sum = 1;
 
 				for (j = 0; j < decimals; j++) {
-					sum = (sum * 10);   // elevando 10 a enésima potencia
+					sum = (sum * 10);
 				}
 
 				sum = (1 / sum);

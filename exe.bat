@@ -1,7 +1,7 @@
 @echo off
-del c.exe
-del c.o
-del c.stackdump
+del *.exe
+del *.o
+del *.exe.stackdump
 cls
 gcc *.c *.h -o c.exe
 c.exe

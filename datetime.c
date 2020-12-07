@@ -7,18 +7,18 @@
 #include "./datetime.h"
 
 const char months[12][2][11] = {
-	{"january"	, "Janeiro"		},
-	{"february"	, "Fevereiro"	},
-	{"march"	, "Marco"		},
-	{"april"	, "Abril"		},
-	{"maio"		, "Maio"		},
-	{"june"		, "Junho"		},
-	{"july"		, "Julho"		},
-	{"august"	, "Agosto"		},
-	{"september", "Setembro"	},
-	{"october"	, "Outubro"		},
-	{"november"	, "Novembro"	},
-	{"december"	, "Dezembro"	}
+	{"January"	, "Janeiro"		},
+	{"February"	, "Fevereiro"	},
+	{"March"	, "Marco"		},
+	{"April"	, "Abril"		},
+	{"Maio"		, "Maio"		},
+	{"June"		, "Junho"		},
+	{"July"		, "Julho"		},
+	{"August"	, "Agosto"		},
+	{"September", "Setembro"	},
+	{"October"	, "Outubro"		},
+	{"November"	, "Novembro"	},
+	{"December"	, "Dezembro"	}
 };
 
 const char weekDays[7][2][20] = { 
@@ -32,9 +32,7 @@ const char weekDays[7][2][20] = {
 };
 
 
-/* ********** REVISAR CALCULO DE DIA SEMANA *************
- * FUNÇÃO QUE RETORNAR UM TIMESTAMP SEGUNDO FORMATO DETERMINADO PELA SUA CHAMADA
- * SEGUINDO OS SEGUINTES PARÂMETROS:
+/*
  * =========================================================================================
  * = DD	=> Retorna, em numeral, o DIA atual(do mês)		- (de 01 à 31)						=
  * = MM	=> Retorna, em numeral, o MÊS atual				- (de 01 à 12)						=
@@ -43,52 +41,56 @@ const char weekDays[7][2][20] = {
  * = hh	=> Retorna a HORA do hoŕario atual				- (15:21:55 > 15)					=
  * = mm	=> Retorna os MINUTOS do hoŕario atual			- (15:21:55 > 21)					=
  * = ss	=> Retorna os SEGUNDOS do hoŕario atual			- (15:21:55 > 55)					=
- * = W		=> Returno o NOME inteiro do DIA atual		- (Segunda-Feira, Terça-Feira...)	=
- * = w		=> Returno o NOME contractado do DIA atual	- (Seg, Ter, Qua...)				=
- * = L		=> Returno o NOME inteiro do MÊS atual		- (Janeiro, Fevereiro...)			=
- * = l		=> Returno o NOME contractado do MÊS atual	- (Jan, Fev...)			            =
+ * = W	=> Returno o NOME inteiro do DIA atual			- (Segunda-Feira, Terça-Feira...)	=
+ * = w	=> Returno o NOME contractado do DIA atual		- (Seg, Ter, Qua...)				=
+ * = L	=> Returno o NOME inteiro do MÊS atual			- (Janeiro, Fevereiro...)			=
+ * = l	=> Returno o NOME contractado do MÊS atual		- (Jan, Fev...)			            =
  * =========================================================================================
  * 
- * =+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+ * = ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	=
  * =	 QUALQUER CARACTÉR ENVIADO, DIFERENTE DOS DESCRITOS À CIMA SERÁ ENCARADOS COMO		=
- * =	  SEPARADOR, SENDO INCLUÍDOS NA STRING output QUE SERÁ O RETORNO DA FUNÇÃO		=
- * =+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
- * = OS CARACTÉRES ENVIADOS EM format, DEVEM SER ESCRITOS EXATAMENTE COMO DESCRITOS ACIMA  =
- * =   VALORES COMO: D, MMM, mmm, h, sssss[...], FARAM COM QUE A FUNÇÃO RETORNE UM ERRO    =
- * =+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
- * = O PARÂMETROS format DEVE CONTER PELO MENOS UM DOS CARACTÉRES DESCRITOS, NÃO TENDO UM  =
- * =   RETORNO PADRÃO, OU SEJA, O PARÂMETRO TEM DE SER ENVIADOS COM UM DOS VALORES ACIMA   =
- * =+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
- * = OS CARACTÉRES PODEM SER ENVIADOS EM CONJUNTO FORMAR ASSIM MÁSCARAS DE DATAS E HORAŔIO =
+ * =	  SEPARADOR, SENDO INCLUÍDOS NA STRING output QUE SERÁ O RETORNO DA FUNÇÃO			=
+ * = ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	=
+ * = OS CARACTÉRES ENVIADOS EM format, DEVEM SER ESCRITOS EXATAMENTE COMO DESCRITOS ACIMA	=
+ * =   VALORES COMO: D, MMM, mmm, h, sssss[...], FARAM COM QUE A FUNÇÃO RETORNE UM ERRO		=
+ * =+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	=
+ * = O PARÂMETROS format DEVE CONTER PELO MENOS UM DOS CARACTÉRES DESCRITOS, NÃO TENDO UM	=
+ * =   RETORNO PADRÃO, OU SEJA, O PARÂMETRO TEM DE SER ENVIADOS COM UM DOS VALORES ACIMA	=
+ * = ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	=
+ * = OS CARACTÉRES PODEM SER ENVIADOS EM CONJUNTO FORMAR ASSIM MÁSCARAS DE DATAS E HORAŔIO	=
  * =				JUNTAMENTE COM OUTROS CARACTÉRES QUE SERAM SEPARADORES					=
- * =  Ex: DD/MM/YYYY | YYYY/MM/DD | DD de L de YYYY | DD/MM hh:mm | l, DDth of YYYY [...]  =
- * =+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
- * =+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
- * = O PARAMETRO input_data_time DEVERÁ CONTER UMA DATA NO FORMATO YYYYMMDDhhmmss ou " "   =
- * = CASO O PARAMETRO SEJA IGUAL A " " A DATA A SER FORMATADA SERÁ A DATA E HORAL ATUAL DO =
- * = SISTEMA.                                                                      		=
- * = O PARAMETRO DEVERÁ TER 0 OU 14 CARACTERES:                                            =
- * = CASO EU QUEIRA FORMATAR SOMENTE A DATA A HORA DEVERÁ VIR ZERADA                       =
- * =  Ex: 20191205000000 formatando somente data                                           =
- * = CASO EU QUEIRA FORMATAR SOMENTE A HORA A DATA DEVERÁ VIR ZERADA                       =
- * =  Ex: 00000000152208 formatando somente hora                                           =
- * =+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+ * =  Ex: DD/MM/YYYY | YYYY/MM/DD | DD de L de YYYY | DD/MM hh:mm | l, DDth of YYYY [...]	=
+ * = ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	=
+ * = ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	=
+ * = O PARAMETRO actualDate DEVERÁ CONTER UMA DATA NO FORMATO YYYYMMDDhhmmss ou ""			=
+ * = CASO O PARAMETRO SEJA IGUAL A "" A DATA A SER FORMATADA SERÁ A DATA E HORAL ATUAL DO	=
+ * = SISTEMA.																				=
+ * = O PARAMETRO DEVERÁ TER 0 OU 14 CARACTERES:												=
+ * = CASO EU QUEIRA FORMATAR SOMENTE A DATA A HORA DEVERÁ VIR ZERADA						=
+ * =  Ex: 20191205000000 formatando somente data											=
+ * = CASO EU QUEIRA FORMATAR SOMENTE A HORA A DATA DEVERÁ VIR ZERADA						=
+ * =  Ex: 00000000152208 formatando somente hora											=
+ * = ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	=
  */
-
-
-
-
 /**
- * @brief Get the Date On Format object
- * 
- * @param format 
- * @param output 
- * @param actualDate 
- * @param lang 
- * @return int 
+ * @brief RETORNA A DATA ATUAL OU A DATA ENVIADA EM /actualData/ NO FORMATO
+ * ENVIADO EM /format/
+ * @authors Kelvin Ronaldo
+ * EX:
+ * getDateOnFormat("DD/MM/YYYY", str, "20201012", LANG_PTBR);
+ * -> result: 12/10/2020;
+ * @param format Formato que deseja que a data seja retonada, seguindo os
+ * parâmetros corredos descrito no comentário acima.
+ * @param output Variável que recebera a data formatada.
+ * @param actualDate Data que deseja formatar. Se a data que deseja forma a
+ * data de agora, a data atual, enviar este parâmetro vazio ("").
+ * @param lang Linguagem que deseja dia da semana e mês por extenso
+ * @return OK se tudo correr normalmente, ERR caso haja erro no 
+ * formato ou em algum parâmetro
  */
 int getDateOnFormat(char *format, char *output, char *actualDate, int lang){
 
+	Datetime dateTime;
 	time_t timer = time(NULL);
 	struct tm* tm;
 
@@ -112,13 +114,13 @@ int getDateOnFormat(char *format, char *output, char *actualDate, int lang){
 	int i		= 0;
 	int j		= 0;
 
-	tm->tm_wday	= 0;
-	tm->tm_year	= 0;
-	tm->tm_mon	= 0;
-	tm->tm_mday	= 0;
-	tm->tm_hour	= 0;
-	tm->tm_min	= 0;
-	tm->tm_sec	= 0;
+	dateTime.weekDay = 0; // tm->tm_wday;
+	dateTime.year = 0; // tm->tm_year;
+	dateTime.mon = 0; // tm->tm_mon;
+	dateTime.day = 0; // tm->tm_mday;
+	dateTime.hour = 0; // tm->tm_hour;
+	dateTime.min = 0; // tm->tm_min;
+	dateTime.sec = 0; // tm->tm_sec;
 
 	// testa a validade do parametro data a ser formatada = actualDate
 	if (strlen(actualDate) != 0 && strlen(actualDate) != 14){
@@ -129,65 +131,71 @@ int getDateOnFormat(char *format, char *output, char *actualDate, int lang){
 	// seta a estrutura com os valores corretos de YYYYMMDDhhmmss
 	if (strlen(actualDate) == 0){
 		tm = localtime(&timer);
-		tm->tm_mon++;
+		dateTime.weekDay = tm->tm_wday;
+		dateTime.year = tm->tm_year;
+		dateTime.mon = tm->tm_mon + 1;
+		dateTime.day = tm->tm_mday;
+		dateTime.hour = tm->tm_hour;
+		dateTime.min = tm->tm_min;
+		dateTime.sec = tm->tm_sec;
 	} else {
-		memset(aux, 0 ,sizeof(aux));
+		memset(aux, 0, sizeof(aux));
 		subString(actualDate, aux, 0, 4);
-		tm->tm_year = atoi(aux) - 1900;
+		dateTime.year = atoi(aux) - 1900;
 
-		memset(aux, 0 ,sizeof(aux));
+		memset(aux, 0, sizeof(aux));
 		subString(actualDate, aux, 4, 2);
-		tm->tm_mon = atoi(aux);
+		dateTime.mon = atoi(aux);
 
-		memset(aux, 0 ,sizeof(aux));
+		memset(aux, 0, sizeof(aux));
 		subString(actualDate, aux, 6, 2);
-		tm->tm_mday = atoi(aux);
+		dateTime.day = atoi(aux);
 
-		memset(aux, 0 ,sizeof(aux));
+		memset(aux, 0, sizeof(aux));
 		subString(actualDate, aux, 8, 2);
-		tm->tm_hour = atoi(aux);
+		dateTime.hour = atoi(aux);
 
-		memset(aux, 0 ,sizeof(aux));
+		memset(aux, 0, sizeof(aux));
 		subString(actualDate, aux, 10, 2);
-		tm->tm_min = atoi(aux);
+		dateTime.min = atoi(aux);
 
-		memset(aux, 0 ,sizeof(aux));
+		memset(aux, 0, sizeof(aux));
 		subString(actualDate, aux, 12, 2);
-		tm->tm_sec = atoi(aux);
+		dateTime.sec = atoi(aux);
 
-		memset(aux, 0 ,sizeof(aux));
+		memset(aux, 0, sizeof(aux));
 	}
 
 	// testa os valores de cada variavel da estrutura de data YYYYMMDD
-	if(tm->tm_year != 0){
-		if(tm->tm_mon < 0 || tm->tm_mon > 12){
+	if(dateTime.year != 0){
+		if(dateTime.mon < 0 || dateTime.mon > 12){
 			strcpy(output, "ERRO MES INVALIDO");
 			return ERR;
 		}
 
-		switch (tm->tm_mon){
+		switch (dateTime.mon){
 			case 1: case 3: case 5: case 7: case 8: case 10: case 12:
-				 if(tm->tm_mday < 1 || tm->tm_mday > 31){
+				 if(dateTime.day < 1 || dateTime.day > 31){
 					strcpy(output, "ERRO DIA INVALIDO");
 					return ERR;
 				 }
 				 break;
 
 			case 4: case 6: case 9: case 11:
-				 if(tm->tm_mday < 1 || tm->tm_mday > 30){
+				 if(dateTime.day < 1 || dateTime.day > 30){
 					strcpy(output, "ERRO DIA INVALIDO");
 					return ERR;
 				 }
 				 break;
 				 
 			case 2:
-				 if(tm->tm_year % 4 == 0){
-					 if(tm->tm_mday < 1 || tm->tm_mday > 29){
+				 if(dateTime.year % 4 == 0){
+					 if(dateTime.day < 1 || dateTime.day > 29){
 						strcpy(output, "ERRO DIA INVALIDO");
 						return ERR;
 					 }
 				 }else{
-					 if(tm->tm_mday < 1 || tm->tm_mday > 28){
+					 if(dateTime.day < 1 || dateTime.day > 28){
 						strcpy(output, "ERRO DIA INVALIDO");
 						return ERR;
 					 }
@@ -198,17 +206,17 @@ int getDateOnFormat(char *format, char *output, char *actualDate, int lang){
 	}
 
 	// testa os valores de cada variavel da estrutura de hora hhmmss
-	 if(tm->tm_hour < 0 || tm->tm_hour > 24){
+	 if(dateTime.hour < 0 || dateTime.hour > 24){
 		strcpy(output, "ERRO HORA INVALIDA");
 		return ERR;
 	 }
 
-	 if(tm->tm_min < 0 || tm->tm_min > 59){
+	 if(dateTime.min < 0 || dateTime.min > 59){
 		strcpy(output, "ERRO MINUTOS INVALIDOS");
 		return ERR;
 	 }
 
-	 if(tm->tm_sec < 0 || tm->tm_sec > 59){
+	 if(dateTime.sec < 0 || dateTime.sec > 59){
 		strcpy(output, "ERRO SEGUNDOS INVALIDOS");
 		return ERR;
 	 }
@@ -217,15 +225,15 @@ int getDateOnFormat(char *format, char *output, char *actualDate, int lang){
 	memset(date, 0x00, sizeof(date));
 
 	if(strlen(actualDate) == 14){
-		sprintf(date, actualDate);
+		strcpy(date, actualDate);
 	}else{
 		sprintf(date, "%d%02d%02d%02d%02d%02d",
-				tm->tm_year + 1900,
-				tm->tm_mon	,
-				tm->tm_mday,
-				tm->tm_hour,
-				tm->tm_min	,
-				tm->tm_sec);
+				dateTime.year + 1900,
+				dateTime.mon,
+				dateTime.day,
+				dateTime.hour,
+				dateTime.min,
+				dateTime.sec);
 	}
 
 	for(i = 0; i < limit; i++){
@@ -421,10 +429,11 @@ int getDateOnFormat(char *format, char *output, char *actualDate, int lang){
 
 /** ********* REVISAR CALCULO DE DIA SEMANA *************
  * @brief RETORNA O DIA ATUAL DA SEMANA POR EXTENSO
+ * @authors Rafael Novo+ e Kelvin Ronaldo
  * EX:
  * getDayOfWeek("150423", result, false, LANG_ENUS);
  * => result: "Thursday"
- * @param inputDate String da data cujo dia será o obtido no formato YYMMDD.
+ * @param inputDate String da data cujo dia será o obtido no formato YYYYMMDD.
  * @param output String de retorno, onde o dia da semana será retornado.
  * @param contract Boolean que define se o a escrita do dia será contractada .
  * Se for true, retorna contractada, se false, retorna nome completo.
@@ -437,14 +446,14 @@ void getDayOfWeek(char *inputDate, char *output, const int contract, int lang)
 	int month	= 0;
 	int year	= 0;
 
-	sprintf(zAux, "%c%c"  , inputDate[4], inputDate[5]);
-	day = atoi(zAux);
+	subString(inputDate, zAux, 0, 4);
+	year = atoi(zAux);
 
-	sprintf(zAux, "%c%c"  , inputDate[2], inputDate[3]);
+	subString(inputDate, zAux, 4, 2);
 	month = atoi(zAux);
 
-	sprintf(zAux, "%c%c", inputDate[0], inputDate[1]);
-	year = atoi(zAux) + 2000;
+	subString(inputDate, zAux, 6, 2);
+	day = atoi(zAux);
 
     switch(month)
     {
@@ -462,8 +471,6 @@ void getDayOfWeek(char *inputDate, char *output, const int contract, int lang)
         case 12: day += 334; break;
     }
 
-   /* Se o ano é um ano-bisexto E
-   Se o mes de fevereiro ja passou entao acrescente um dia ao deslocamento*/
 	if (((year % 4) == 0) && (((year % 100) != 0) || ((year % 400) == 0)) && (month > 2)){
 		day += 1;
 	}
@@ -493,10 +500,11 @@ void getDayOfWeek(char *inputDate, char *output, const int contract, int lang)
 
 /**
  * @brief RETORNA O MÊS ATUAL POR EXTENSO
+ * @authors Rafael Novo e Kelvin Ronaldo
  * EX:
  * getMonth("191201", result, true, LANG_PTBR);
  * -> result: "Jan"
- * @param inputDate String da data cujo mês será o obtido no formato YYMMDD.
+ * @param inputDate String da data cujo mês será o obtido no formato YYYYMMDD.
  * @param output String de retorno, onde o mês será retornado.
  * @param contract Boolean que define se o a escrita do mês será contractada.
  * Se for true, retorna contractada, se false, retorna nome completo.
@@ -508,7 +516,7 @@ void getMonth(char *inputDate, char *output, const int contract, int lang){
 	char monthStr[3]	= {0x00};
 	char zAux[128] 		= {0x00};
 
-	subString(inputDate, monthStr, 2, 2);
+	subString(inputDate, monthStr, 4, 2);
 	monthNum = atoi(monthStr);
 
 	switch(monthNum - 1){

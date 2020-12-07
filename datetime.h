@@ -4,6 +4,16 @@
 #define LANG_ENUS	0
 #define LANG_PTBR	1
 
+typedef struct __DATETIME{
+	int weekDay;
+	int year;
+	int mon;
+	int day;
+	int hour;
+	int min;
+	int sec;
+} Datetime;
+
 
 enum eWEEK_DAYS{
 	MONDAY = 0,
